@@ -46,13 +46,19 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCompletion(SpeedTestReport report) {
+                    final int deger = (int) report.getTransferRateBit().intValue()/100000;
+                    final int dd = (int) report.getTransferRateOctet().intValue()/100000;
                     // called when download/upload is finished
-                    Log.v("speedtest", "[COMPLETED] rate in octet/s : " + report.getTransferRateOctet());
-                    Log.v("speedtest", "[COMPLETED] rate in bit/s   : " + report.getTransferRateBit());
+                    Log.v("TATZ", "[COMPLETED] rate in octet/s : " + report.getTransferRateOctet());
+                    Log.v("TATZ", "[COMPLETED] rate in bit/s   : " + report.getTransferRateBit());
+                    Log.v("TATZ", "[COMPLETED] dd   : " + dd);
+                    Log.v("TATZ", "[COMPLETED] deger   : " + deger);
                 }
 
                 @Override
                 public void onError(SpeedTestError speedTestError, String errorMessage) {
+                    Log.e("TATZ", "onError: "+errorMessage);
+                    Log.e("TATZ", "onError: "+speedTestError);
                     // called when a download/upload error occur
                 }
 
@@ -60,26 +66,27 @@ public class MainActivity extends AppCompatActivity {
                 public void onProgress(float percent, SpeedTestReport report) {
 
                     final int deger = (int) report.getTransferRateBit().intValue()/100000;
+                    final int dd = (int) report.getTransferRateOctet().intValue()/100000;
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
-                            speedoMeterView.setSpeed(deger, true);
+                            speedoMeterView.setSpeed(dd, true);
 
-                            textView.setText(deger+ " Mbps");
+                            textView.setText(dd+ " Mbps");
                         }
                     });
 
 
                     // called to notify download/upload progress
-                    Log.v("speedtest", "[PROGRESS] progress : " + percent + "%");
-                    Log.v("speedtest", "[PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
-                    Log.v("speedtest", "[PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
+                    Log.v("TATZ", "[PROGRESS] progress : " + percent + "%");
+                    Log.v("TATZ", "[PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
+                    Log.v("TATZ", "[PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
                 }
             });
-
-            speedTestSocket.startDownload("http://ipv4.ikoula.testdebit.info/1M.iso");
+            speedTestSocket.setDownloadSetupTime(600000);
+            speedTestSocket.startDownload("https://raw.githubusercontent.com/yourkin/fileupload-fastapi/a85a697cab2f887780b3278059a0dd52847d80f3/tests/data/test-5mb.bin");
 
             return null;
         }
